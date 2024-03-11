@@ -1,17 +1,18 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HeaderPrinter;
+import util.UrlParser;
+
+import java.io.*;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -22,15 +23,30 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+        try (InputStream in = connection.getInputStream();
+             OutputStream out = connection.getOutputStream();
+             InputStreamReader inputStreamReader = new InputStreamReader(in);
+             BufferedReader br = new BufferedReader(inputStreamReader)) {
+
+
+            String httpRequestHeader = br.readLine();
+            String urlRequest = UrlParser.parseRequest(httpRequestHeader);
+            HeaderPrinter.printRequestHeader(httpRequestHeader, br);
+            byte[] body = getByteBody(urlRequest);
+
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "<h1>Hello World</h1>".getBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private byte[] getByteBody(String urlRequest) throws IOException {
+        final String filename =
+                "C:\\Users\\정연호\\Desktop\\공부방법\\코드스쿼드\\3월\\웹서버\\src\\main\\resources\\static\\" + urlRequest;
+        Path path = Paths.get(filename);
+        return Files.readAllBytes(path);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
