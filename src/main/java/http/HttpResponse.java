@@ -7,12 +7,11 @@ import static webserver.RequestHandler.logger;
 
 public class HttpResponse {
 
-    public void sendReponsed(String urlRequest, OutputStream out) throws IOException {
-        byte[] reponse = getRequestedFile(urlRequest);
+    public void sendResponse(String urlRequest, OutputStream out) throws IOException {
+        byte[] response = getRequestedFile(urlRequest);
         DataOutputStream dos = new DataOutputStream(out);
-        response200Header(dos, reponse.length);
-        responseBody(dos, reponse);
-
+        response200Header(dos, response.length);
+        responseBody(dos, response);
     }
 
     private byte[] getRequestedFile(String urlRequest) throws IOException {
