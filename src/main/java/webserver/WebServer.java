@@ -21,10 +21,11 @@ public class WebServer {
     private static int determinePort(String[] args) {
         if (args != null && args.length > 0) {
             return Integer.parseInt(args[0]);
-            //port
+            //적어도 포트를 한줄 이상하면 그 숫자에 맞춰서 소켓 생성
+            //커맨드라인 입력창이 String으로 입력을 받아서 숫자로 변환함
         }
-        //웹서버는 기본적으로 8080번 포트를 사용한다.
         return DEFAULT_PORT;
+        //입력받은 값이 없으면 내 컴퓨터의 포트번호인 8080로 접속한다.
     }
 
     private static void generateSocket(int port) throws IOException {
