@@ -7,9 +7,6 @@ import util.UrlParser;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -43,10 +40,15 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] getByteBody(String urlRequest) throws IOException {
-        final String filename =
-                "C:\\Users\\정연호\\Desktop\\공부방법\\코드스쿼드\\3월\\웹서버\\src\\main\\resources\\static\\" + urlRequest;
-        Path path = Paths.get(filename);
-        return Files.readAllBytes(path);
+        final String relativePath = "src/main/resources/static/";
+        File file = new File(relativePath, urlRequest);
+
+        byte[] data = new byte[(int) file.length()];
+        try (FileInputStream fis = new FileInputStream(file)) {
+            fis.read(data);
+        }
+
+        return data;
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
