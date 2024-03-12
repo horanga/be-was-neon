@@ -1,11 +1,4 @@
 package util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +8,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class HeaderPrinter {
-
-    public static void printRequestHeader(BufferedReader br, String httpRequestHeader) {
-
+    public static void printRequestHeader(String httpRequestHeader, BufferedReader br) throws IOException {
         Logger log = LoggerFactory.getLogger(RequestHandler.class);
         log.debug(httpRequestHeader);
 
         while (!httpRequestHeader.isEmpty()) {
-            try {
-                httpRequestHeader = br.readLine();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            httpRequestHeader = br.readLine();
            log.debug(httpRequestHeader);
         }
     }
