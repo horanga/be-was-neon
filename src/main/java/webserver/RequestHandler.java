@@ -1,19 +1,24 @@
 package webserver;
 
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HeaderPrinter;
-import util.UrlParser;
 
 import java.io.*;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    HttpRequest httpRequest;
+    HttpResponse httpResponse;
     private Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, HttpRequest httpRequest, HttpResponse httpResponse) {
         this.connection = connectionSocket;
+        this.httpRequest = httpRequest;
+        this.httpResponse = httpResponse;
     }
 
     public void run() {
@@ -25,49 +30,14 @@ public class RequestHandler implements Runnable {
              InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader br = new BufferedReader(inputStreamReader)) {
 
+            String[] request = httpRequest.getRequest(br);
+            HeaderPrinter.printRequestHeader(br, request[0]);
+            httpResponse.sendReponsed(request[1], out);
 
-            String httpRequestHeader = br.readLine();
-            String urlRequest = UrlParser.parseRequest(httpRequestHeader);
-            HeaderPrinter.printRequestHeader(httpRequestHeader, br);
-            byte[] body = getByteBody(urlRequest);
+            //request[0] = requestHeader, request[0]= urlRequest
 
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private byte[] getByteBody(String urlRequest) throws IOException {
-        final String relativePath = "src/main/resources/static/";
-        File file = new File(relativePath, urlRequest);
-
-        byte[] data = new byte[(int) file.length()];
-        try (FileInputStream fis = new FileInputStream(file)) {
-            fis.read(data);
-        }
-
-        return data;
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }
