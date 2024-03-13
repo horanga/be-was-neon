@@ -1,11 +1,10 @@
-package http;
+package http.request;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
-public class JoinRequest implements HttpRequest{
+public class JoinPage implements HttpRequest {
     @Override
-    public String getRequest() throws IOException {
+    public String getUri() throws IOException {
 
         return "registration/index.html";
 
