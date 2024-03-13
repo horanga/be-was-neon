@@ -15,16 +15,21 @@ import java.net.Socket;
 public class RequestHandler implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
+    private final InputStream in;
+    private final OutputStream out;
 
-    public RequestHandler(Socket connectionSocket) {
-        this.connection = connectionSocket;
+
+    public RequestHandler(Socket connection, InputStream in, OutputStream out) {
+        this.connection = connection;
+        this.in = in;
+        this.out = out;
     }
 
     public void run() {
         debugIp();
 
-        try (InputStream in = connection.getInputStream();
+        try (
              InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader br = new BufferedReader(inputStreamReader)) {
 
@@ -38,21 +43,17 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private HttpRequest getRequestType(String requestHeader) throws IOException {
-        return requestHeader.contains("?") ?
-                new JoinUriFactory().getRequest(requestHeader) :
-                new PageUriFactory().getRequest(requestHeader);
-    }
-
-    private void respond(HttpRequest requestType, String requestHeader) {
-        HttpResponse response = ResponseFactory.getResponse(requestType);
-        try (OutputStream out = connection.getOutputStream()) {
-            response.respondToRequest(requestType, out, requestHeader);
-        } catch (IOException e) {
-            logger.debug(e.getMessage());
-
+        private HttpRequest getRequestType(String requestHeader) throws IOException {
+            return requestHeader.contains("?") ?
+                    new JoinUriFactory().getRequest(requestHeader) :
+                    new PageUriFactory().getRequest(requestHeader);
         }
-    }
+
+        private void respond(HttpRequest requestType, String requestHeader) throws IOException {
+        HttpResponse response = ResponseFactory.getResponse(requestType);
+        response.respondToRequest(requestType, out, requestHeader);
+        }
+
 
     private void debugIp() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),

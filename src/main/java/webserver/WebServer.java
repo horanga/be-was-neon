@@ -45,7 +45,7 @@ public class WebServer {
         }
     }
 
-    private static void startThread(Socket connection) {
-        executorService.submit(new RequestHandler(connection));
+    private static void startThread(Socket connection) throws IOException {
+        executorService.submit(new RequestHandler(connection, connection.getInputStream(), connection.getOutputStream()));
     }
 }
