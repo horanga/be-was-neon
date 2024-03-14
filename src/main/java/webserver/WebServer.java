@@ -12,10 +12,10 @@ import java.util.concurrent.Executors;
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private static final int COUNT_OF_THREAD = Runtime.getRuntime().availableProcessors();
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(COUNT_OF_THREAD);
 
-    //Runtime.getRuntime().availableProcessors()을 통해서 cpu 스레드가 4개로 나와서 이에 맞춰 스레드 개수 설정함
-    //아직까지 비동기나 동기화와 관련된 요구사항이 없어서 단순한 스레드풀을 생성함
+    //아직 비동기나 동기화와 관련된 요구사항이 없어서 단순한 스레드풀을 생성함
 
     public static void main(String args[]) throws Exception {
         int port = determinePort(args);
