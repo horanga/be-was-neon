@@ -6,5 +6,4 @@ public interface RequestFactory {
 
     HttpRequest getRequest(String request);
 
-
 }

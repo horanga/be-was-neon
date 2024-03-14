@@ -1,7 +1,7 @@
 package webserver;
 
-import http.factory.JoinUriFactory;
-import http.factory.PageUriFactory;
+import http.factory.MembershipRequestFactory;
+import http.factory.PageRequestFactory;
 import http.factory.ResponseFactory;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
@@ -21,7 +21,6 @@ public class RequestHandler implements Runnable {
     private final OutputStream out;
 
 
-
     public RequestHandler(Socket connection, InputStream in, OutputStream out) {
         this.connection = connection;
         this.in = in;
@@ -31,8 +30,7 @@ public class RequestHandler implements Runnable {
     public void run() {
         debugIp();
 
-        try (
-             InputStreamReader inputStreamReader = new InputStreamReader(in);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader br = new BufferedReader(inputStreamReader)) {
 
             String requestHeader = br.readLine();
@@ -45,20 +43,18 @@ public class RequestHandler implements Runnable {
         }
     }
 
-        private HttpRequest getRequestType(String requestHeader) throws IOException {
-            return requestHeader.contains("?") ?
-                    new JoinUriFactory().getRequest(requestHeader) :
-                    new PageUriFactory().getRequest(requestHeader);
+    private HttpRequest getRequestType(String requestHeader) throws IOException {
+        return requestHeader.contains("?") ?
+                new MembershipRequestFactory().getRequest(requestHeader) :
+                new PageRequestFactory().getRequest(requestHeader);
+    }
 
-        }
-
-        private void respond(HttpRequest requestType, String requestHeader) throws IOException {
+    private void respond(HttpRequest requestType, String requestHeader) throws IOException {
         ResponseSender sender = new ResponseSender();
         HttpResponse response = ResponseFactory.getResponse(requestType);
         byte[] fileToByte = response.respondToRequest(requestType, out, requestHeader);
         sender.sendResponse(fileToByte, out);
-        }
-
+    }
 
     private void debugIp() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),

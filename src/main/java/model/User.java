@@ -1,5 +1,7 @@
 package model;
 
+import java.util.logging.Logger;
+
 public class User {
     private String userId;
     private String password;
@@ -11,10 +13,6 @@ public class User {
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public void validate(String ){
-
     }
 
     public String getUserId() {
