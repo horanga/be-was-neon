@@ -5,6 +5,7 @@ import http.factory.PageUriFactory;
 import http.factory.ResponseFactory;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
+import http.response.ResponseSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HeaderPrinter;
@@ -50,8 +51,10 @@ public class RequestHandler implements Runnable {
         }
 
         private void respond(HttpRequest requestType, String requestHeader) throws IOException {
+        ResponseSender sender = new ResponseSender();
         HttpResponse response = ResponseFactory.getResponse(requestType);
-        response.respondToRequest(requestType, out, requestHeader);
+        byte[] fileToByte = response.respondToRequest(requestType, out, requestHeader);
+        sender.sendResponse(fileToByte, out);
         }
 
 
