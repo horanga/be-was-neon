@@ -4,6 +4,6 @@ import java.io.IOException;
 
 public interface HttpRequest {
 
-    public String getUri() throws IOException;
+    public String getResourcePath() throws IOException;
 }
 

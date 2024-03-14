@@ -16,7 +16,7 @@ public class JoinResponse implements HttpResponse {
         Database.addUser(new User(strings.get(0), strings.get(1), strings.get(2), strings.get(3)));
         //userId, password, name, email순으로 저장한다.
 
-        return getRequestedFile(httpRequest.getUri());
+        return getRequestedFile(httpRequest.getResourcePath());
 
 
     }

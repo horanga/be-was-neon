@@ -1,12 +1,11 @@
 package http.factory;
 
 import http.request.HttpRequest;
-import http.request.Membership;
+import http.request.MembershipRequest;
 
-public class JoinUriFactory implements RequestFactory {
+public class MembershipRequestFactory implements RequestFactory {
     @Override
     public HttpRequest getRequest(String request) {
-        return new Membership();
+        return new MembershipRequest();
     }
-
 }
