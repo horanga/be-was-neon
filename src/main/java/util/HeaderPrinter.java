@@ -6,7 +6,6 @@ import webserver.RequestHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class HeaderPrinter {
     public static void printRequestHeader(BufferedReader br, String httpRequestHeader) {

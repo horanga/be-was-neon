@@ -16,6 +16,13 @@ public class Parsor {
 
     public static List<String> pasrseJoinRequest(String request) {
         String[] split = request.substring(request.indexOf("?") + 1).split("&");
-        return Arrays.stream(split).map(i->i.substring(i.indexOf("="+1))).collect(Collectors.toList());
+        return Arrays.stream(split).map(i->i.substring(i.indexOf("=")+1)).collect(Collectors.toList());
+    }
+
+
+    public static void main(String[] args) {
+        String a = "register?id=1&username=2&password=3&email=4";
+        List<String> strings = pasrseJoinRequest(a);
+        System.out.println(strings);
     }
 }

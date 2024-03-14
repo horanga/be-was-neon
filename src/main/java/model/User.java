@@ -13,6 +13,10 @@ public class User {
         this.email = email;
     }
 
+    public void validate(String ){
+
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -33,4 +37,5 @@ public class User {
     public String toString() {
         return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
     }
+
 }
