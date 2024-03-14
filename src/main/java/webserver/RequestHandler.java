@@ -1,71 +1,64 @@
 package webserver;
 
+import http.factory.JoinUriFactory;
+import http.factory.PageUriFactory;
+import http.factory.ResponseFactory;
+import http.request.HttpRequest;
+import http.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HeaderPrinter;
-import util.UrlParser;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private Socket connection;
+    public static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    public RequestHandler(Socket connectionSocket) {
-        this.connection = connectionSocket;
+    private final Socket connection;
+    private final InputStream in;
+    private final OutputStream out;
+
+
+
+    public RequestHandler(Socket connection, InputStream in, OutputStream out) {
+        this.connection = connection;
+        this.in = in;
+        this.out = out;
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
-                connection.getPort());
+        debugIp();
 
-        try (InputStream in = connection.getInputStream();
-             OutputStream out = connection.getOutputStream();
+        try (
              InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader br = new BufferedReader(inputStreamReader)) {
 
+            String requestHeader = br.readLine();
+            HeaderPrinter.printRequestHeader(br, requestHeader);
+            HttpRequest uri = getRequestType(requestHeader);
+            respond(uri, requestHeader);
 
-            String httpRequestHeader = br.readLine();
-            String urlRequest = UrlParser.parseRequest(httpRequestHeader);
-            HeaderPrinter.printRequestHeader(httpRequestHeader, br);
-            byte[] body = getByteBody(urlRequest);
-
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    private byte[] getByteBody(String urlRequest) throws IOException {
-        final String filename =
-                "C:\\Users\\정연호\\Desktop\\공부방법\\코드스쿼드\\3월\\웹서버\\src\\main\\resources\\static\\" + urlRequest;
-        Path path = Paths.get(filename);
-        return Files.readAllBytes(path);
-    }
+        private HttpRequest getRequestType(String requestHeader) throws IOException {
+            return requestHeader.contains("?") ?
+                    new JoinUriFactory().getRequest(requestHeader) :
+                    new PageUriFactory().getRequest(requestHeader);
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
-    }
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+        private void respond(HttpRequest requestType, String requestHeader) throws IOException {
+        HttpResponse response = ResponseFactory.getResponse(requestType);
+        response.respondToRequest(requestType, out, requestHeader);
         }
+
+
+    private void debugIp() {
+        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
+                connection.getPort());
     }
 }
