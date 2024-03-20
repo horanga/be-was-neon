@@ -17,7 +17,7 @@ public class ResponseSender {
     }
 
     private void sendHeader(DataOutputStream dos, RequestMessage message, int lengthOfBodyContent) {
-        String contenType = message.getRequestLine().getContentType();
+        String contenType = message.getRequestLine().getMimeType();
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: "+contenType +"\r\n");

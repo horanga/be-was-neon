@@ -1,24 +1,20 @@
 package http.response;
 
-import http.request.HttpRequest;
+import http.request.path.FilePath;
+import http.request.message.RequestLine;
 
-import java.io.*;
-
-import static webserver.RequestHandler.logger;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public interface HttpResponse {
+    public byte[] respond(FilePath httpRequest, RequestLine requestLine) throws IOException, URISyntaxException;
 
-    public byte[] respondToRequest(HttpRequest httpRequest, OutputStream out, String requstHeader) throws IOException;
-
-    default byte[] getRequestedFile(String urlRequest) throws IOException {
-        final String relativePath = "src/main/resources/static/";
-        File file = new File(relativePath, urlRequest);
-
+    static byte[] getRequestedFile(java.io.File file) throws IOException {
         byte[] data = new byte[(int) file.length()];
         try (FileInputStream fis = new FileInputStream(file)) {
             fis.read(data);
         }
         return data;
     }
-
 }
