@@ -5,18 +5,18 @@ import java.util.List;
 
 public class RequestMessage {
     private final RequestLine requestLine;
-    private final List<String> remainsOfMessage;
+    private final List<String> subsequentLines;
 
-    public RequestMessage(RequestLine requestLine, List<String> remainsOfMessage) {
+    public RequestMessage(RequestLine requestLine, List<String> subsequentLines) {
         this.requestLine = requestLine;
-        this.remainsOfMessage = remainsOfMessage;
+        this.subsequentLines = subsequentLines;
     }
 
-    public RequestLine getRequestLine(){
+    public RequestLine getRequestLine() {
         return requestLine;
     }
 
-    public List<String> getMessage(){
-        return Collections.unmodifiableList(remainsOfMessage);
+    public List<String> getMessage() {
+        return Collections.unmodifiableList(subsequentLines);
     }
 }
