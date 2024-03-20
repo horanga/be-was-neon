@@ -10,22 +10,23 @@ public enum ContentType {
     ICO("ico", "image/x-icon"),
     PNG("png", "image/png"),
     JPG("jpg", "image/jpeg"),
-    SVG("svg", "image/svg+xml");
+    SVG("svg", "image/svg+xml"),
+    NOFile("","" );
 
     private final String contentType;
-    private final String process;
+    private final String mimeType;
 
-    ContentType(String contentType, String process) {
+    ContentType(String contentType, String mimeType) {
         this.contentType = contentType;
-        this.process = process;
+        this.mimeType = mimeType;
     }
 
-    public static String getContentType(String requestLine) {
+    public static String getMimeType(String requestLine) {
         return Stream.of(ContentType.values())
                 .filter(i -> requestLine.contains(i.contentType))
                 .findFirst()
-                .map(i -> i.process)
-                .get();
+                .map(i -> i.mimeType)
+                .orElse(NOFile.mimeType);
     }
 
 }
