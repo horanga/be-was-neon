@@ -1,6 +1,5 @@
 package webserver;
 
-import http.request.factory.PathFactory;
 import http.request.factory.PathFactories;
 import http.request.path.FilePath;
 import http.request.message.MessageParser;
@@ -58,8 +57,7 @@ public class RequestHandler implements Runnable {
     }
 
     private FilePath getContentPath(RequestLine requestLine) throws IOException {
-        PathFactory pathFactory = PathFactories.choosePathFactory(requestLine);
-        return pathFactory.getFilePath(requestLine.getUri());
+        return PathFactories.getPath(requestLine.getUri());
     }
 
     private void respond(FilePath request, RequestMessage message) throws IOException, URISyntaxException {

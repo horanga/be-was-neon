@@ -1,28 +1,44 @@
 package http.request.factory;
 
-import http.request.message.RequestLine;
+import http.request.path.FilePath;
+import http.request.path.IcoFile;
+import http.request.path.css.GlobalCss;
+import http.request.path.css.MainCss;
+import http.request.path.css.ResetCss;
+import http.request.path.html.JoinPage;
+import http.request.path.html.Membership;
+import http.request.path.html.PostPage;
+import http.request.path.svg.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 public enum PathFactories {
-    MEMBERSHIP_PATH_FACTORY(new MembershipPathFactory(), Arrays.asList("create")),
-    PAGE_PATH_FACTORY(new PagePathFactory(), Arrays.asList("index.html", "register.html")),
-    CSS_PATH_FACTORY(new CssPathFactory(), Arrays.asList("reset.css", "main.css", "global.css")),
-    ICO_PATH_FACTORY(new IcoPathFactory(), Arrays.asList("favicon.ico")),
-    SVG_PATH_FACTORY(new SvgPathFactory(), Arrays.asList("img/bookMark.svg","img/ci_chevron-left.svg","img/ci_chevron-right.svg"
-    ,"img/like.svg", "img/sendLink.svg","img/signiture.svg"));
-    private final PathFactory pathFactory;
-    private final List<String> pathList;
+    POSTPAGE("/index.html", new PostPage()),
+    JOINPAGE("/register.html", new JoinPage()),
+    MAIN("/main.css", new MainCss()),
+    RESET("/reset.css", new ResetCss()),
+    GLOBAL("/global.css", new GlobalCss()),
+    BOOKMARK("/img/bookMark.svg", new BookMark()),
+    CHEVRON_LEFT("/img/ci_chevron-left.svg", new ChevronLeft()),
+    CHEVRON_RIGHT("/img/ci_chevron-right.svg", new ChevronRight()),
+    LIKE("/img/like.svg", new Like()),
+    SENDLINK("/img/sendLink.svg", new SendLink()),
+    SIGNITURE("/img/signiture.svg", new SignitureSvg()),
+    ICO("/favicon.ico", new IcoFile()),
+    MEMBERSHIP("/create", new Membership());
 
-    PathFactories(PathFactory pathFactory, List<String> pathList) {
-        this.pathFactory = pathFactory;
-        this.pathList = pathList;
+    String path;
+    FilePath pathInstance;
+
+    PathFactories(String path, FilePath pathInstance) {
+        this.path = path;
+        this.pathInstance = pathInstance;
     }
 
-    public static PathFactory choosePathFactory(RequestLine requestLine) {
-        return Arrays.stream(PathFactories.values()).
-                filter(factory -> requestLine.hasMatchingPath(factory.pathList)).
-                map(factory -> factory.pathFactory).findFirst().get();
+    public static FilePath getPath(String[] requestLine) {
+        return Arrays.stream(PathFactories.values()).filter(i ->
+                        Arrays.asList(requestLine).contains(i.path)).findFirst().
+                map(pageType -> pageType.pathInstance).get();
+
     }
 }
