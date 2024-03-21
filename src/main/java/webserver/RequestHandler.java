@@ -31,6 +31,7 @@ public class RequestHandler implements Runnable {
     public void run() {
         debugIp();
 
+
         try (InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
 
@@ -66,7 +67,7 @@ public class RequestHandler implements Runnable {
         byte[] fileToByte = response.respond(request, message.getRequestLine());
         sender.sendResponse(fileToByte, message, out);
     }
-
+  
     private void debugIp() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
