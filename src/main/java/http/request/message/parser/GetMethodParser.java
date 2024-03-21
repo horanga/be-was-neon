@@ -19,12 +19,12 @@ public class GetMethodParser implements Parser {
 
     @Override
     public RequestMessage parse(String requestLine, BufferedReader buffer) throws IOException {
-        String mimeType = ContentType.getMimeType(requestLine);
-        List<String> subsequentHeader = new ArrayList<>();
+        String mimeType = ContentType.getMimeType(requestLine);//변하지 않음
+        List<String > subsequentHeader = new ArrayList<>();
         getSubsequentLines(buffer, subsequentHeader);
         return RequestMessage
                 .getMessage(RequestLine.getRequest(requestLine, parseUri(requestLine), mimeType)
-                        ,getMethod(requestLine), subsequentHeader);
+                        , subsequentHeader);
     }
 
     private String[] parseUri(String input) {
