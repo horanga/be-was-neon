@@ -19,6 +19,10 @@ public class PostMethodParser implements Parser {
             body = parseBody(buffer, messageSize);
         }
 
+        //공백에서 끝나면-->뒷부분 ㅇ릭게하는
+
+        /
+
         String[] userInfo = parseMembershipRequest(body);
         return RequestMessage.postMessage(RequestLine.postRequest(requestLine), subsequentHeader, userInfo);
     }
@@ -32,6 +36,7 @@ public class PostMethodParser implements Parser {
 
     private String parseBody(BufferedReader buffer, int size) throws IOException {
         char[] body = new char[size];
+        //StringBuilder-->문장을 붙여주는 거
         int bytesRead = buffer.read(body, 0, size);
         if (bytesRead != size) {
             throw new IOException("Content length mismatch.");

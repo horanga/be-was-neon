@@ -9,7 +9,7 @@ public class MessagePrinter {
     public void printRequestHeader(RequestMessage message) {
 
         Logger log = LoggerFactory.getLogger(RequestHandler.class);
-        log.debug(message.getRequestLine().getRequestLine());
+        log.debug(message.getRequestLine().getRequest());
 
         message.getMessage().stream().forEach(i -> log.debug(i));
     }

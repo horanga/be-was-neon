@@ -21,13 +21,15 @@ public class RequestLine {
     public static RequestLine postRequest(String requestLine){
         RequestLine postRequest = new RequestLine();
         postRequest.requestLine = requestLine;
+        postRequest.uri = new String[]{"/register"};
 
         return postRequest;
     }
 
     public boolean hasMatchingPath(List<String> uriList) {
-        return Arrays.stream(uri).anyMatch(uriList::contains)
-                || uriList.stream().anyMatch(requestLine::contains);
+        return uriList.stream().anyMatch(i-> Arrays.stream(uri).)
+                Arrays.stream(uri).anyMatch(i->uriList)
+                || uriList.stream().anyMatch(requestLine::equals);
     }
 
     public List<String> getUserInfo() {
