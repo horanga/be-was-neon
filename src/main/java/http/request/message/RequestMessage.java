@@ -4,13 +4,30 @@ import java.util.Collections;
 import java.util.List;
 
 public class RequestMessage {
-    private final RequestLine requestLine;
-    private final List<String> subsequentLines;
+    private RequestLine requestLine;
+    private List<String> subsequentLines;
 
-    public RequestMessage(RequestLine requestLine, List<String> subsequentLines) {
-        this.requestLine = requestLine;
-        this.subsequentLines = subsequentLines;
+    private String[] userInfo;
+
+    public RequestMessage(){};
+
+    public static RequestMessage getMessage(RequestLine requestLine, List<String> subsequentLines){
+        RequestMessage getMessage = new RequestMessage();
+        getMessage.requestLine = requestLine;
+        getMessage.subsequentLines = subsequentLines;
+
+        return getMessage;
     }
+
+    public static RequestMessage postMessage(RequestLine requestLine, List<String> subsequentLines, String[] userInfo){
+        RequestMessage postMessage = new RequestMessage();
+        postMessage.requestLine =requestLine;
+        postMessage.subsequentLines =subsequentLines;
+        postMessage.userInfo = userInfo;
+
+        return postMessage;
+    }
+
 
     public RequestLine getRequestLine() {
         return requestLine;
