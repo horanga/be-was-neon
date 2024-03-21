@@ -10,20 +10,24 @@ public class RequestLine {
     private String[] uri;
     private String mimeType;
 
-    public static RequestLine getRequest(String requestLine, String[] uri, String mimeType) {
+    public static RequestLine getRequest(String requestLine, String[] uri, String mimeType){
         RequestLine getRequest = new RequestLine();
-        getRequest.requestLine = requestLine;
-        getRequest.uri = uri;
-        getRequest.mimeType = mimeType;
+        getRequest.requestLine=requestLine;
+        getRequest.uri=uri;
+        getRequest.mimeType=mimeType;
         return getRequest;
     }
 
-    public static RequestLine postRequest(String requestLine) {
+    public static RequestLine postRequest(String requestLine){
         RequestLine postRequest = new RequestLine();
         postRequest.requestLine = requestLine;
-        postRequest.uri = new String[]{"/user/create"};
 
         return postRequest;
+    }
+
+    public boolean hasMatchingPath(List<String> uriList) {
+        return Arrays.stream(uri).anyMatch(uriList::contains)
+                || uriList.stream().anyMatch(requestLine::contains);
     }
 
     public List<String> getUserInfo() {
