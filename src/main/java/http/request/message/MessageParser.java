@@ -16,22 +16,18 @@ public class MessageParser {
 
     private static final Pattern pattern = Pattern.compile("GET\s+(.*?)\s+HTTP");
 
-    public RequestMessage parseRequestMessage(BufferedReader buffer) throws IOException {
-
-        String requestLine = buffer.readLine();
-        String mimeType = ContentType.getMimeType(requestLine);
-        List<String> subsequentLines = new ArrayList<>();
-        getSubsequentLines(buffer, subsequentLines);
-
-        return new RequestMessage(new RequestLine(requestLine, ParserType.parse(requestLine), mimeType)
-                , subsequentLines);
-    }
-
-    private static void getSubsequentLines(BufferedReader buffer, List<String> subsequentLines) throws IOException {
+    private static int getSubsequentLines(BufferedReader buffer, List<String> subsequentLines) throws IOException {
         String line;
+        int MessageSize = 0;
         while ((line = buffer.readLine()) != null && !line.isEmpty()) {
+            if (line.contains("Content-Length")) {
+
+                String[] split = line.split(":");
+                MessageSize = Integer.parseInt(split[1].trim());
+            }
             subsequentLines.add(line);
         }
+        return MessageSize;
     }
 
     private static String[] parseMembershipRequest(String request) {
@@ -47,6 +43,25 @@ public class MessageParser {
         }
         return Stream.of(path.split(" ")).filter(i -> !i.isEmpty())
                 .toArray(String[]::new);
+    }
+
+    public RequestMessage parseRequestMessage(BufferedReader buffer) throws IOException {
+
+        String requestLine = buffer.readLine();
+        String mimeType = ContentType.getMimeType(requestLine);
+        List<String> subsequentHeader = new ArrayList<>();
+
+
+        int size = getSubsequentLines(buffer, subsequentHeader);
+        char[] body = new char[size];
+        int bytesRead = buffer.read(body, 0, size);
+        if (bytesRead != size) {
+            throw new IOException("Content length mismatch.");
+        }
+        String bodyString = new String(body);
+
+        return new RequestMessage(new RequestLine(requestLine, ParserType.parse(requestLine), mimeType)
+                , subsequentHeader, bodyString);
     }
 
     public enum ParserType {
