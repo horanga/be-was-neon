@@ -16,11 +16,18 @@ public interface Parser {
         String line;
         int MessageSize = 0;
         while ((line = buffer.readLine()) != null && !line.isEmpty()) {
-            if (line.contains("Content-Length")) {
+            if (line.contains("Content-Length")) {//size
+
+                // requestHeaeder
+
+                //공백 버퍼가 여기서 끝나버리는거예요
+
+                //reqeustBody
 
                 String[] split = line.split(":");
                 MessageSize = Integer.parseInt(split[1].trim());
             }
+
             subsequentLines.add(line);
         }
         return MessageSize;
