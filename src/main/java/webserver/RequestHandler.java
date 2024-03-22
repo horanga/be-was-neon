@@ -1,25 +1,26 @@
 package webserver;
 
-import http.factory.JoinUriFactory;
-import http.factory.PageUriFactory;
-import http.factory.ResponseFactory;
-import http.request.HttpRequest;
+import http.request.factory.PathFactories;
+import http.request.path.FilePath;
+import http.request.message.MessageParser;
+import http.request.message.RequestLine;
+import http.request.message.RequestMessage;
 import http.response.HttpResponse;
+import http.response.ResponseSender;
+import http.response.factory.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HeaderPrinter;
+import util.MessagePrinter;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URISyntaxException;
 
 public class RequestHandler implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private final Socket connection;
     private final InputStream in;
     private final OutputStream out;
-
-
 
     public RequestHandler(Socket connection, InputStream in, OutputStream out) {
         this.connection = connection;
@@ -30,33 +31,43 @@ public class RequestHandler implements Runnable {
     public void run() {
         debugIp();
 
-        try (
-             InputStreamReader inputStreamReader = new InputStreamReader(in);
-             BufferedReader br = new BufferedReader(inputStreamReader)) {
 
-            String requestHeader = br.readLine();
-            HeaderPrinter.printRequestHeader(br, requestHeader);
-            HttpRequest uri = getRequestType(requestHeader);
-            respond(uri, requestHeader);
+        try (InputStreamReader inputStreamReader = new InputStreamReader(in);
+             BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            RequestMessage requestMessage = parse(socketBuffer);
+            RequestLine requestLine = requestMessage.getRequestLine();
+            FilePath path = getContentPath(requestLine);
+            print(requestMessage);
+            respond(path, requestMessage);
+
+
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
-        private HttpRequest getRequestType(String requestHeader) throws IOException {
-            return requestHeader.contains("?") ?
-                    new JoinUriFactory().getRequest(requestHeader) :
-                    new PageUriFactory().getRequest(requestHeader);
+    private RequestMessage parse(BufferedReader buffer) throws IOException {
+        MessageParser messageParser = new MessageParser();
+        return messageParser.parseRequestMessage(buffer);
+    }
 
-        }
+    private void print(RequestMessage Message) {
+        MessagePrinter messagePrinter = new MessagePrinter();
+        messagePrinter.printRequestHeader(Message);
+    }
 
-        private void respond(HttpRequest requestType, String requestHeader) throws IOException {
-        HttpResponse response = ResponseFactory.getResponse(requestType);
-        response.respondToRequest(requestType, out, requestHeader);
-        }
+    private FilePath getContentPath(RequestLine requestLine) throws IOException {
+        return PathFactories.getPath(requestLine.getUri());
+    }
 
-
+    private void respond(FilePath request, RequestMessage message) throws IOException, URISyntaxException {
+        ResponseSender sender = new ResponseSender();
+        HttpResponse response = ResponseFactory.chooseResponse(request);
+        byte[] fileToByte = response.respond(request, message.getRequestLine());
+        sender.sendResponse(fileToByte, message, out);
+    }
+  
     private void debugIp() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());

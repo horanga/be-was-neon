@@ -1,17 +1,16 @@
 package http.response;
 
-import http.request.HttpRequest;
+
+
+import http.request.path.FilePath;
+import http.request.message.RequestLine;
 
 import java.io.*;
-
-import static webserver.RequestHandler.logger;
+import java.net.URISyntaxException;
 
 public class PageResponse implements HttpResponse {
     @Override
-    public void respondToRequest(HttpRequest httpRequest, OutputStream out, String requestHeader) throws IOException {
-        byte[] response = getRequestedFile(httpRequest.getUri());
-        DataOutputStream dos = new DataOutputStream(out);
-        response200Header(dos, response.length);
-        responseBody(dos, response);
+    public byte[] respond(FilePath httpRequest, RequestLine requestLine) throws IOException, URISyntaxException {
+        return HttpResponse.getRequestedFile(httpRequest.getFile());
     }
 }

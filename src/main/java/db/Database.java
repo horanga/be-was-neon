@@ -22,7 +22,7 @@ public class Database {
         return users.values();
     }
 
-    public static void clear(){
+    public static void clear() {
         users.clear();
     }
 }
