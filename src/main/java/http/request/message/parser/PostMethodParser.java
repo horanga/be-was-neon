@@ -14,13 +14,10 @@ public class PostMethodParser implements Parser {
     public RequestMessage parse(String requestLine, BufferedReader buffer) throws IOException {
         List<String> subsequentHeader = new ArrayList<>();
         int messageSize = getSubsequentLines(buffer, subsequentHeader);
-        String body ="";
-        if(messageSize>0){
+        String body = "";
+        if (messageSize > 0) {
             body = parseBody(buffer, messageSize);
         }
-
-        //공백에서 끝나면-->뒷부분 ㅇ릭게하는
-
 
         String[] userInfo = parseMembershipRequest(body);
         return RequestMessage.postMessage(RequestLine.postRequest(requestLine), subsequentHeader, userInfo);
