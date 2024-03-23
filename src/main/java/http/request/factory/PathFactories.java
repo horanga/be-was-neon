@@ -3,7 +3,6 @@ package http.request.factory;
 import http.request.path.FilePath;
 import http.request.path.IcoFile;
 import http.request.path.css.GlobalCss;
-import http.request.path.css.MainCss;
 import http.request.path.css.ResetCss;
 import http.request.path.html.JoinPage;
 import http.request.path.html.Membership;
@@ -15,7 +14,7 @@ import java.util.Arrays;
 public enum PathFactories {
     POSTPAGE("/index.html", new PostPage()),
     JOINPAGE("/register.html", new JoinPage()),
-    MAIN("/main.css", new MainCss()),
+
     RESET("/reset.css", new ResetCss()),
     GLOBAL("/global.css", new GlobalCss()),
     BOOKMARK("/img/bookMark.svg", new BookMark()),

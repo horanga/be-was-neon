@@ -2,7 +2,6 @@ package http.response.factory;
 
 import http.request.path.*;
 import http.request.path.css.GlobalCss;
-import http.request.path.css.MainCss;
 import http.request.path.css.ResetCss;
 import http.request.path.html.JoinPage;
 import http.request.path.html.Membership;
@@ -18,7 +17,7 @@ import java.util.List;
 public enum ResponseFactory {
 
     MEMBERSHIP_RESPONSE(new MembershipResponse(), Arrays.asList(new Membership())),
-    PAGE_RESPONSE(new PageResponse(), Arrays.asList(new JoinPage(), new PostPage(), new MainCss(),
+    PAGE_RESPONSE(new PageResponse(), Arrays.asList(new JoinPage(), new PostPage(),
             new GlobalCss(), new ResetCss(), new IcoFile(), new BookMark(), new ChevronLeft(), new ChevronRight(),
             new Like(), new SendLink(), new SignitureSvg()));
 
