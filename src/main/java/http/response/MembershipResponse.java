@@ -1,25 +1,33 @@
 package http.response;
 
 import db.Database;
-import http.request.path.FilePath;
 import http.request.message.RequestLine;
+import http.request.message.RequestMessage;
+import http.request.path.FilePath;
+import http.response.header.Header;
+import http.response.header.HttpVersion;
+import http.response.header.StatusCode;
 import model.User;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.logging.Logger;
 
 public class MembershipResponse implements HttpResponse {
 
 
     @Override
-    public byte[] respond(FilePath httpRequest, RequestLine requestLine) throws IOException, URISyntaxException {
-        List<String> userInfo = requestLine.getUserInfo();
-        Database.addUser(new User(userInfo.get(0), userInfo.get(1), userInfo.get(2), userInfo.get(3)));
+    public Response respond(File files, RequestMessage requestMessage) throws IOException, URISyntaxException {
+        String[] userInfo = requestMessage.getUserInfo();
+        Database.addUser(new User(userInfo[0], userInfo[1], userInfo[2], userInfo[3]));
         //userId, password, name, email순으로 저장한다.
-        Logger.getLogger("RequestHandler").info("회원가입이 완료됐습니다.");
+        LoggerFactory.getLogger("RequestHandler").debug("회원가입이 완료됐습니다.");
+        byte[] file = getRequestedFile(files);
+        RequestLine requestLine = requestMessage.getRequestLine();
 
-        return HttpResponse.getRequestedFile(httpRequest.getFile());
+        Header header = Header.redirectHeader(HttpVersion.V_11, requestLine.getMimeType(), "http://localhost:8080/index.html");
+
+        return new Response(header, file);
     }
 }
