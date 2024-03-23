@@ -44,15 +44,6 @@ public interface Parser {
             this.matchingKeyword = matchingKeyword;
 
         }
-
-//        public static String[] parse(String input) {
-//            Optional<Parser.ParserType> parserType = Stream.of(Parser.ParserType.values()).
-//                    filter(i -> i.hasMatchingKeyword(input)).
-//                    findFirst();
-//
-//            return parserType.map(j -> j.parseStrategy.apply(input)).orElse(null);
-//        }
-
         private boolean hasMatchingKeyword(String input) {
             return matchingKeyword.stream().anyMatch(input::contains);
         }
