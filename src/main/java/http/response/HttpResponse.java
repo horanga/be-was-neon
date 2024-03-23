@@ -1,17 +1,16 @@
 package http.response;
 
-import http.request.message.RequestMessage;
+import http.request.path.FilePath;
+import http.request.message.RequestLine;
 
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 public interface HttpResponse {
-    public Response respond(File file, RequestMessage requestMessage) throws IOException, URISyntaxException;
+    public byte[] respond(FilePath httpRequest, RequestLine requestLine) throws IOException, URISyntaxException;
 
-    default byte[] getRequestedFile(java.io.File file) throws IOException {
+    static byte[] getRequestedFile(java.io.File file) throws IOException {
 
         byte[] data = new byte[(int) file.length()];
         try (FileInputStream fis = new FileInputStream(file)) {
@@ -19,4 +18,5 @@ public interface HttpResponse {
         }
         return data;
     }
+
 }

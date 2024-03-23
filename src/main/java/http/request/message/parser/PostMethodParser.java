@@ -21,7 +21,6 @@ public class PostMethodParser implements Parser {
 
         //공백에서 끝나면-->뒷부분 ㅇ릭게하는
 
-        /
 
         String[] userInfo = parseMembershipRequest(body);
         return RequestMessage.postMessage(RequestLine.postRequest(requestLine), subsequentHeader, userInfo);

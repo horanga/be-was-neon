@@ -26,12 +26,6 @@ public class RequestLine {
         return postRequest;
     }
 
-    public boolean hasMatchingPath(List<String> uriList) {
-        return uriList.stream().anyMatch(i-> Arrays.stream(uri).)
-                Arrays.stream(uri).anyMatch(i->uriList)
-                || uriList.stream().anyMatch(requestLine::equals);
-    }
-
     public List<String> getUserInfo() {
         String[] split = requestLine.substring(requestLine.indexOf("?") + 1).split("&");
 

@@ -1,7 +1,5 @@
 package webserver;
 
-import http.request.factory.PathFactories;
-import http.request.factory.PathFactory;
 import http.request.message.RequestLine;
 import http.request.message.RequestMessage;
 import http.request.message.parser.GetMethodParser;
@@ -39,12 +37,12 @@ public class RequestHandler implements Runnable {
              BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
             RequestMessage requestMessage = parse(socketBuffer);
             RequestLine requestLine = requestMessage.getRequestLine();
-            FilePath path = getContentPath(requestLine);
+
             print(requestMessage);
-            respond(path, requestMessage);
 
 
-        } catch (IOException | URISyntaxException e) {
+
+        } catch (IOException  e) {
             e.printStackTrace();
         }
 
@@ -63,11 +61,6 @@ public class RequestHandler implements Runnable {
     private void print(RequestMessage Message) {
         MessagePrinter messagePrinter = new MessagePrinter();
         messagePrinter.printRequestHeader(Message);
-    }
-
-    private FilePath getContentPath(RequestLine requestLine) throws IOException {
-        PathFactory pathFactory = PathFactories.choosePathFactory(requestLine);
-        return pathFactory.getFilePath(requestLine.getUri());
     }
 
     private void respond(FilePath request, RequestMessage message) throws IOException, URISyntaxException {
