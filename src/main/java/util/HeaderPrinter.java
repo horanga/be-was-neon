@@ -7,10 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.RequestHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class HeaderPrinter {
+
     public static void printRequestHeader(BufferedReader br, String httpRequestHeader) {
 
         Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -22,6 +27,7 @@ public class HeaderPrinter {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+           log.debug(httpRequestHeader);
         }
     }
 }

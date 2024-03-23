@@ -25,7 +25,6 @@ public class WebServer {
     private static int determinePort(String[] args) {
         if (args != null && args.length > 0) {
             return Integer.parseInt(args[0]);
-
             //적어도 포트를 한줄 이상 입력하면 그 숫자에 맞춰서 소켓 생성
             //커맨드라인 입력창이 String으로 입력을 받아서 숫자로 변환함
         }
