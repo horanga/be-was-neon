@@ -6,7 +6,10 @@ import http.request.message.parser.GetMethodParser;
 import http.request.message.parser.Parser;
 import http.request.message.parser.PostMethodParser;
 import http.request.path.FilePath;
+import http.request.path.RequestType;
 import http.response.HttpResponse;
+import http.response.MembershipResponse;
+import http.response.Response;
 import http.response.ResponseSender;
 import http.response.factory.ResponseFactory;
 import org.slf4j.Logger;
@@ -35,14 +38,14 @@ public class RequestHandler implements Runnable {
 
         try (InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
              BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
+
             RequestMessage requestMessage = parse(socketBuffer);
             RequestLine requestLine = requestMessage.getRequestLine();
-
+            File file = getFile(requestLine);
             print(requestMessage);
+            respond(file, requestMessage);
 
-
-
-        } catch (IOException  e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
@@ -63,11 +66,22 @@ public class RequestHandler implements Runnable {
         messagePrinter.printRequestHeader(Message);
     }
 
-    private void respond(FilePath request, RequestMessage message) throws IOException, URISyntaxException {
+    private File getFile(RequestLine requestLine) throws IOException {
+        FilePath filePath = RequestType.getFilePath(requestLine);
+        File file = filePath.getFile(requestLine.getUri());
+        return file;
+    }
+
+    private void respond(File file, RequestMessage message) throws IOException, URISyntaxException {
         ResponseSender sender = new ResponseSender();
-        HttpResponse response = ResponseFactory.chooseResponse(request);
-        byte[] fileToByte = response.respond(request, message.getRequestLine());
-        sender.sendResponse(fileToByte, message, out);
+        HttpResponse response = ResponseFactory.chooseResponse(message);
+        Response respond = response.respond(file, message);
+
+        if (message.getMethod().toUpperCase().equals("POST")) {
+            sender.sendResponse(respond.getFile(), respond.getHeader().getRedirectionMessage(), out);
+        } else {
+            sender.sendResponse(respond.getFile(), respond.getHeader().getMessage(), out);
+        }
     }
 
     private void debugIp() {
