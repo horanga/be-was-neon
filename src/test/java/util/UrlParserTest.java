@@ -9,10 +9,10 @@ class UrlParserTest {
 //
 //        HttpRequest httpRequest = new
 //
-//        String HeaderLine = "GET /index.html HTTP/1.1";
+//        String HeaderLine = "GET /register.html HTTP/1.1";
 //        String urlRequest = httpRequest.parseRequest(HeaderLine);
 //
-//        assertThat(urlRequest).isEqualTo("index.html");
+//        assertThat(urlRequest).isEqualTo("register.html");
 //    }
 
 }
