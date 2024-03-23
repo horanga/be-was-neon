@@ -11,6 +11,10 @@ public interface Parser {
 
     RequestMessage parse(String requestLine, BufferedReader buffer) throws IOException;
 
+    default String getMethod(String requestLine){
+        return requestLine.split(" ")[0].trim();
+    }
+
     default int getSubsequentLines(BufferedReader buffer, List<String> subsequentLines) throws IOException {
         String line;
         int MessageSize = 0;

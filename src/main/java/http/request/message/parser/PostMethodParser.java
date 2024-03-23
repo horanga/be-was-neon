@@ -20,7 +20,7 @@ public class PostMethodParser implements Parser {
         }
 
         String[] userInfo = parseMembershipRequest(body);
-        return RequestMessage.postMessage(RequestLine.postRequest(requestLine), subsequentHeader, userInfo);
+        return RequestMessage.postMessage(RequestLine.postRequest(requestLine), getMethod(requestLine), subsequentHeader, userInfo);
     }
 
     //한글로 하면 안되는 거 수정하기
