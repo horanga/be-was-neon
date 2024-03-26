@@ -20,12 +20,12 @@ class RequestHandlerTest {
     void clearDb() {
         Database.clear();
     }
-    @DisplayName("index.html 리소스를 요청할 때 네트워크로 응답이 반환된다.")
+    @DisplayName("register.html 리소스를 요청할 때 네트워크로 응답이 반환된다.")
     @Test
     void test3() throws IOException {
         Socket socketMock = mock(Socket.class);
 
-        InputStream inputStreamMock = new ByteArrayInputStream("GET /index.html HTTP/1.1\n\n".getBytes());
+        InputStream inputStreamMock = new ByteArrayInputStream("GET /register.html HTTP/1.1\n\n".getBytes());
         OutputStream outputStreamMock = new ByteArrayOutputStream();
 
         when(socketMock.getInputStream()).thenReturn(inputStreamMock);
@@ -45,7 +45,7 @@ class RequestHandlerTest {
         Socket socketMock = mock(Socket.class);
 
 
-        InputStream inputStreamMock = new ByteArrayInputStream("GET /index.html HTTP/1.1\n\n".getBytes());
+        InputStream inputStreamMock = new ByteArrayInputStream("GET /register.html HTTP/1.1\n\n".getBytes());
 
         OutputStream outputStreamMock = new ByteArrayOutputStream();
 

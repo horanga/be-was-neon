@@ -10,24 +10,21 @@ import static webserver.RequestHandler.logger;
 
 public class ResponseSender {
 
-    public void sendResponse(byte[] response, RequestMessage message, OutputStream out){
+    public void sendResponse(byte[] file, String headerMessage, OutputStream out) {
         DataOutputStream dos = new DataOutputStream(out);
-        sendHeader(dos, message, response.length);
-        sendBody(dos, response);
+        sendHeader(dos, headerMessage);
+        sendBody(dos, file);
     }
 
-    private void sendHeader(DataOutputStream dos, RequestMessage message, int lengthOfBodyContent) {
-        String contenType = message.getRequestLine().getMimeType();
+    private void sendHeader(DataOutputStream dos, String message) {
+
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: "+contenType +"\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
+            dos.writeBytes(message);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
-    }
 
+    }
     private void sendBody(DataOutputStream dos, byte[] body) {
         try {
             dos.write(body, 0, body.length);
