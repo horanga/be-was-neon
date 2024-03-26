@@ -11,7 +11,7 @@ public enum ContentType {
     PNG("png", "image/png"),
     JPG("jpg", "image/jpeg"),
     SVG("svg", "image/svg+xml"),
-    NOFile("","" );
+    NOFile("", "");
 
     private final String contentType;
     private final String mimeType;

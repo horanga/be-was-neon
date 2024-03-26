@@ -6,20 +6,24 @@ import java.util.stream.Collectors;
 
 public class RequestLine {
 
-    private final String requestLine;
-    private final String[] uri;
-    private final String mimeType;
+    private String requestLine;
+    private String[] uri;
+    private String mimeType;
 
-
-    public RequestLine(String requestLine, String[] uri, String mimeType) {
-        this.requestLine = requestLine;
-        this.uri = uri;
-        this.mimeType = mimeType;
+    public static RequestLine getRequest(String requestLine, String[] uri, String mimeType) {
+        RequestLine getRequest = new RequestLine();
+        getRequest.requestLine = requestLine;
+        getRequest.uri = uri;
+        getRequest.mimeType = mimeType;
+        return getRequest;
     }
 
-    public boolean hasMatchingPath(List<String> uriList) {
-        return Arrays.stream(uri).anyMatch(uriList::contains)
-                || uriList.stream().anyMatch(requestLine::contains);
+    public static RequestLine postRequest(String requestLine) {
+        RequestLine postRequest = new RequestLine();
+        postRequest.requestLine = requestLine;
+        postRequest.uri = new String[]{"/user/create"};
+
+        return postRequest;
     }
 
     public List<String> getUserInfo() {
@@ -32,7 +36,7 @@ public class RequestLine {
         return uri;
     }
 
-    public String getRequestLine() {
+    public String getRequest() {
         return requestLine;
     }
 
