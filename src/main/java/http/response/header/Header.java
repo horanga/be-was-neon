@@ -1,8 +1,5 @@
 package http.response.header;
 
-import http.ClientDatabase;
-import login.SessionManager;
-
 public class Header {
     //리퀘스트랑 리스판스랑 헤더가 같다.
 
@@ -12,7 +9,7 @@ public class Header {
     private  String contentType;
     private  int contentLength;
     private String newLocation;
-    SessionManager sessionManager = new SessionManager();
+
     public Header(){};
 
 
@@ -32,15 +29,6 @@ public class Header {
         header.newLocation = newLocation;
 
         return header;
-    }
-
-    public String getLoginSuccesMessage(String sid){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(getMessage());
-        stringBuilder.append("Set-Cookie: sid=" + sid+";"+" Path="+carriageReturn);
-        stringBuilder.append(carriageReturn);
-
-        return stringBuilder.toString();
     }
 
     public String getMessage() {

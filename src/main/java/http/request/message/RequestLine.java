@@ -1,38 +1,46 @@
 package http.request.message;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestLine {
 
-    private final String requestLine;
-    private final String method;
-    private final String[] uri;
+    private String requestLine;
+    private String[] uri;
+    private String mimeType;
 
-
-    public RequestLine(String requestLine, String method, String[] uri) {
-        this.requestLine = requestLine;
-        this.method = method;
-        this.uri = uri;
+    public static RequestLine getRequest(String requestLine, String[] uri, String mimeType) {
+        RequestLine getRequest = new RequestLine();
+        getRequest.requestLine = requestLine;
+        getRequest.uri = uri;
+        getRequest.mimeType = mimeType;
+        return getRequest;
     }
 
-    public boolean isPostRequest() {
-        return isMatchedMethod("POST");
+    public static RequestLine postRequest(String requestLine) {
+        RequestLine postRequest = new RequestLine();
+        postRequest.requestLine = requestLine;
+        postRequest.uri = new String[]{"/user/create"};
+
+        return postRequest;
     }
 
-    public boolean isMatchedMethod(String method) {
-        return this.method.equals(method);
-    }
+    public List<String> getUserInfo() {
+        String[] split = requestLine.substring(requestLine.indexOf("?") + 1).split("&");
 
-    public boolean isMatchedUri(String uri) {
-        return requestLine.contains(uri);
+        return Arrays.stream(split).map(i -> i.substring(i.indexOf("=") + 1)).collect(Collectors.toList());
     }
 
     public String[] getUri() {
-        return Arrays.copyOf(uri, uri.length);
+        return uri;
     }
 
-    public String getRequestLine(){
+    public String getRequest() {
         return requestLine;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
 }
