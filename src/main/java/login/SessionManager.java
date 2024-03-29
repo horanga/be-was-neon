@@ -17,6 +17,10 @@ public class SessionManager {
         response.addCookie(LOGIN_SESSION_ID, cookie);
     }
 
+    public void deleteSession(){
+        loginSessionMap.clear();
+    }
+
     public User getUserLoginInfo(Cookie cookie){
         return loginSessionMap.getOrDefault(cookie.getSid(), new User());
     }
@@ -33,5 +37,12 @@ public class SessionManager {
         return new Cookie(token);
     }
 
+    public Map<String, User> getLoginSessionMap(){
+        return Collections.unmodifiableMap(loginSessionMap);
+    }
 
+
+    public void clear() {
+        loginSessionMap.clear();
+    }
 }

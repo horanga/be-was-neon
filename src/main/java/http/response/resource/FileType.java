@@ -12,6 +12,7 @@ public enum FileType {
 
     MEMBERSHIP("POST", "/user/create", new MemberShip()),
     LOGIN_RESULT("POST", "/login.html", new LoginResult()),
+    LOGOUT_PAGE("POST", "/logout.html", new Logout()),
     REGISTERER_FORM("GET", "/register.html", new RegisterForm()),
     LOGIN_PAGE("GET", "/user/login.html", new Login()),
     CONTENT("GET", "", new OtherPage());
