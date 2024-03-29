@@ -1,12 +1,9 @@
 package http.response.factory;
 
-import db.DatabaseImpl;
+import db.UserDatabaseImpl;
 import http.request.HttpRequest;
 import http.request.message.RequestLine;
-import http.response.HttpResponse;
-import http.response.LoginResult;
-import http.response.Membership;
-import http.response.Page;
+import http.response.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,8 +12,9 @@ import java.util.stream.Collectors;
 public enum ResponseType {
 
 
-    MEMBERSHIP_RESPONSE(new Membership(new DatabaseImpl()), "POST", "user/create"),
+    MEMBERSHIP_RESPONSE(new Membership(new UserDatabaseImpl()), "POST", "user/create"),
     LOGIN_RESPONSE(new LoginResult(), "POST", "login.html"),
+    LOGOUT_RESPONSE(new Logout(), "POST", "logout"),
     PAGE_RESPONSE(new Page(), "GET", "");
 
     private final HttpResponse httpResponse;
