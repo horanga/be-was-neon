@@ -1,6 +1,7 @@
 package webserver;
 
-import db.Database;
+import db.DatabaseImpl;
+import http.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +17,11 @@ import static org.mockito.Mockito.when;
 
 class RequestHandlerTest {
 
+    Database database = new DatabaseImpl();
+
     @BeforeEach
     void clearDb() {
-        Database.clear();
+        database.clear();
     }
     @DisplayName("register.html 리소스를 요청할 때 네트워크로 응답이 반환된다.")
     @Test
