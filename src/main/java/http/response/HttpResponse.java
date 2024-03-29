@@ -1,22 +1,32 @@
 package http.response;
 
-import http.request.message.RequestMessage;
+import db.ClientDatabaseImpl;
+import http.ClientDatabase;
+import http.request.HttpRequest;
+import login.Cookie;
+import login.SessionManager;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
+
+import static login.SessionManager.LOGIN_SESSION_ID;
 
 public interface HttpResponse {
-    public Response respond(File file, RequestMessage requestMessage) throws IOException, URISyntaxException;
 
-    default byte[] getRequestedFile(java.io.File file) throws IOException {
+    Response generateResponse(File file, HttpRequest httpRequest) throws IOException;
 
-        byte[] data = new byte[(int) file.length()];
-        try (FileInputStream fis = new FileInputStream(file)) {
-            fis.read(data);
-        }
-        return data;
+    default byte[] readFile(File file) throws IOException {
+        StaticFileReader fileReader = new StaticFileReader();
+        return fileReader.readFile(file);
     }
+
+    default Cookie getLoginCookie(){
+        SessionManager sessionManager = new SessionManager();
+        ClientDatabase clientDatabase = new ClientDatabaseImpl();
+        return clientDatabase.getCookie(LOGIN_SESSION_ID);
+
+    }
+
 }
+
