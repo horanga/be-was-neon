@@ -21,4 +21,8 @@ public class RequestHeader {
     public String getMimeType() {
         return mimeType;
     }
+
+    public List<String> getRequestHeader() {
+        return requestHeader;
+    }
 }
