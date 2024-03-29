@@ -10,8 +10,7 @@ public enum ContentType {
     ICO("ico", "image/x-icon"),
     PNG("png", "image/png"),
     JPG("jpg", "image/jpeg"),
-    SVG("svg", "image/svg+xml"),
-    NOFile("", "");
+    SVG("svg", "image/svg+xml");
 
     private final String contentType;
     private final String mimeType;
@@ -21,12 +20,17 @@ public enum ContentType {
         this.mimeType = mimeType;
     }
 
-    public static String getMimeType(String requestLine) {
+    public static ContentType getMimeType(String requestLine) {
+
+        ContentType defaultType = HTML;
+
         return Stream.of(ContentType.values())
                 .filter(i -> requestLine.contains(i.contentType))
                 .findFirst()
-                .map(i -> i.mimeType)
-                .orElse(NOFile.mimeType);
+                .orElse(defaultType);
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
 }
