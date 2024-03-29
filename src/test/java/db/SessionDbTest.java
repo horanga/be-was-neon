@@ -1,9 +1,11 @@
 package db;
 
-import http.Database;
+import http.ClientDatabase;
+import http.UserDatabase;
+import login.Cookie;
 import login.LoginManager;
+import login.SessionManager;
 import model.User;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,16 +18,20 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 public class SessionDbTest {
 
-    Database database = new DatabaseImpl();
+    UserDatabase userDatabase = new UserDatabaseImpl();
+    ClientDatabase clientDatabase = new ClientDatabaseImpl();
+    SessionManager sessionManager = new SessionManager();
     @BeforeEach()
     void setting(){
-        database.clear();
+        userDatabase.clear();
+        clientDatabase.clear();
+        sessionManager.clear();
     }
     @DisplayName("회원가입이 된 유저의 경우, 비밀번호를 잘못입력해서 로그인에 실패한다.")
     @Test
     void test1(){
         User user = new User("A", "B", "C", "D");
-        database.addUser(user);
+        userDatabase.addUser(user);
 
         LoginManager loginManager = new LoginManager();
         boolean login = loginManager.login("A", "B");
@@ -47,18 +53,48 @@ public class SessionDbTest {
     void test3(){
         User user = new User("A", "B", "C", "D");
 
-        database.addUser(user);
+        userDatabase.addUser(user);
 
         LoginManager loginManager = new LoginManager();
         boolean login = loginManager.login("A", "C");
-        Map<String, User> userList = database.getUser();
-        Optional<User> userById = database.findUserById("A");
+        Map<String, User> userList = userDatabase.getUser();
+        Optional<User> userById = userDatabase.findUserById("A");
 
         assertSoftly(sofly->{
            sofly.assertThat(login).isTrue();
            sofly.assertThat(userList.size()).isEqualTo(1);
            sofly.assertThat(user).isEqualTo(userById.get());
         });
+
+    }
+    @DisplayName("로그아웃 하면 세션과 쿠키 정보가 사라진다.")
+    @Test
+    void test4(){
+        User user = new User("A", "B", "C", "D");
+        userDatabase.addUser(user);
+
+        LoginManager loginManager = new LoginManager();
+        loginManager.login("A", "C");
+
+        Map<String, Cookie> cookieDatabase = clientDatabase.getCookieDatabase();
+        Map<String, User> loginSessionMap = sessionManager.getLoginSessionMap();
+
+
+        assertSoftly(sofly->{
+            sofly.assertThat(cookieDatabase.size()).isEqualTo(1);
+            sofly.assertThat(loginSessionMap.size()).isEqualTo(1);
+
+        });
+
+        LoginManager loginManager1 = new LoginManager();
+        loginManager1.logout();
+
+        assertSoftly(sofly->{
+            sofly.assertThat(cookieDatabase.size()).isEqualTo(0);
+            sofly.assertThat(loginSessionMap.size()).isEqualTo(0);
+
+        });
+
 
     }
 
