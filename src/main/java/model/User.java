@@ -8,12 +8,23 @@ public class User {
     private String name;
     private String email;
 
-    public User(String userId, String password, String name, String email) {
+    public User(){};
+
+    public User(String userId, String name, String password, String email) {
         this.userId = userId;
-        this.password = password;
         this.name = name;
+        this.password = password;
         this.email = email;
     }
+
+    public static User loginInfo(String userId, String password){
+        User user = new User();
+        user.userId=userId;
+        user.password =password;
+
+        return user;
+    }
+
 
     public String getUserId() {
         return userId;

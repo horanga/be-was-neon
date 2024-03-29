@@ -1,11 +1,13 @@
 package http.response;
 
 import http.response.header.Header;
+import login.Cookie;
 
 public class Response {
 
     private final Header header;
     private final byte[] file;
+    private Cookie cookie;
 
     public Response(Header header, byte[] file) {
         this.header = header;
@@ -20,8 +22,7 @@ public class Response {
         return file;
     }
 
-    public String getHeaderMessage(){
-       return header.getMessage();
+    public void setCookie(Cookie cookie){
+        this.cookie = cookie;
     }
-
 }
