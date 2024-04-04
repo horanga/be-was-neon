@@ -1,5 +1,7 @@
 package login;
 
+import db.UserDatabaseImpl;
+import http.UserDatabase;
 import http.response.LoginResult;
 import model.User;
 
@@ -7,26 +9,30 @@ import java.util.*;
 
 public class SessionManager {
     public static final String LOGIN_SESSION_ID = "LOGIN_COOKIE";
-    private static List<Cookie> accountCookie = new ArrayList<>();
     private static Map<String, User> loginSessionMap = new HashMap<>();
 
     public void createSession(User user, LoginResult response){
         String sid = getSid();
-        loginSessionMap.put(sid, user);
+
+        UserDatabase userDatabase = new UserDatabaseImpl();
+        Optional<User> userData = userDatabase.findUserById(user.getUserId());
+        loginSessionMap.put(sid, userData.get());
         Cookie cookie = createCookie(sid);
         response.addCookie(LOGIN_SESSION_ID, cookie);
     }
 
+    public boolean isSessionExisted(){
+        return !loginSessionMap.isEmpty();
+        //비어있으면 로그인 x 비어있지 않으며 로그인한 상태
+    }
+
+    public User getUserInfo(String sid){
+        return loginSessionMap.get(sid);
+
+    }
+
     public void deleteSession(){
         loginSessionMap.clear();
-    }
-
-    public User getUserLoginInfo(Cookie cookie){
-        return loginSessionMap.getOrDefault(cookie.getSid(), new User());
-    }
-
-    public boolean isCookieExisted(Cookie cookie){
-        return loginSessionMap.containsKey(cookie.getSid());
     }
 
     private String getSid() {
@@ -41,8 +47,7 @@ public class SessionManager {
         return Collections.unmodifiableMap(loginSessionMap);
     }
 
-
-    public void clear() {
+    public void clear(){
         loginSessionMap.clear();
     }
 }
