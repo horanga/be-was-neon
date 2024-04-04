@@ -1,7 +1,8 @@
 package http.request.message;
 
-public class RequestBody {
+import java.util.Arrays;
 
+public class RequestBody {
     private final String requestBody;
     private final String[] userInfo;
 
@@ -9,8 +10,7 @@ public class RequestBody {
         this.requestBody = requestBody;
         this.userInfo = userInfo;
     }
-
     public String[] getUserInfo() {
-        return userInfo;
+        return Arrays.copyOf(userInfo, userInfo.length);
     }
 }

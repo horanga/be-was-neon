@@ -1,16 +1,17 @@
 package http.request.message;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RequestHeader {
 
     private final List<String> requestHeader;
-    private final String mimeType;
+    private final ContentType contentType;
     private final int contentSize;
 
-    public RequestHeader(List<String> requestHeader, String mimeType, int contentSize) {
+    public RequestHeader(List<String> requestHeader, ContentType contentType, int contentSize) {
         this.requestHeader = requestHeader;
-        this.mimeType = mimeType;
+        this.contentType = contentType;
         this.contentSize = contentSize;
     }
 
@@ -19,10 +20,12 @@ public class RequestHeader {
     }
 
     public String getMimeType() {
-        return mimeType;
+        return contentType.getMimeType();
     }
 
     public List<String> getRequestHeader() {
-        return requestHeader;
+        return Collections.unmodifiableList(requestHeader);
     }
+
+
 }
