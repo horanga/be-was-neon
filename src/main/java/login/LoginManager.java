@@ -3,6 +3,7 @@ package login;
 import db.ClientDatabaseImpl;
 import db.UserDatabaseImpl;
 import http.ClientDatabase;
+import http.UserDatabase;
 import model.User;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class LoginManager {
     }
 
     private boolean isAcountValid(String id, String password) {
-        UserDatabaseImpl userDatabaseImpl = new UserDatabaseImpl();
+        UserDatabase userDatabaseImpl = new UserDatabaseImpl();
         Map<String, User> users = userDatabaseImpl.getUser();
 
         return users.entrySet().stream().anyMatch(user ->

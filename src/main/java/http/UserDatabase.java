@@ -3,7 +3,7 @@ package http;
 import model.User;
 import java.util.*;
 
-public interface Database {
+public interface UserDatabase {
 
     void addUser(User user);
     Optional<User> findUserById(String userId);
