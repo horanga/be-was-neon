@@ -9,15 +9,12 @@ import java.io.OutputStream;
 
 public class NormalResponseSender implements ResponseSender {
     @Override
-    public void sendResponse(byte[] file,  Response response, OutputStream out) {
+    public void sendResponse(byte[] fileToByte, Response response, OutputStream out) {
 
         DataOutputStream dos = new DataOutputStream(out);
         Header header = response.getHeader();
         String message = header.getMessage();
         sendHeader(dos, message);
-        sendBody(dos, file);
-
+        sendBody(dos, fileToByte);
     }
-
-
 }

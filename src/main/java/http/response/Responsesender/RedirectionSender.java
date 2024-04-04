@@ -9,13 +9,13 @@ import java.io.OutputStream;
 
 public class RedirectionSender implements ResponseSender {
     @Override
-    public void sendResponse(byte[] file, Response response, OutputStream out) {
+    public void sendResponse(byte[] fileToByte, Response response, OutputStream out) {
 
         DataOutputStream dos = new DataOutputStream(out);
         Header header = response.getHeader();
         String redirectionMessage = header.getRedirectionMessage();
         sendHeader(dos, redirectionMessage);
-        sendBody(dos, file);
+        sendBody(dos, fileToByte);
 
     }
 }
