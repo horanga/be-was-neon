@@ -1,5 +1,6 @@
 package http.response.factory;
 
+import db.ClientDatabaseImpl;
 import db.UserDatabaseImpl;
 import http.request.HttpRequest;
 import http.request.message.RequestLine;
@@ -13,14 +14,14 @@ public enum ResponseType {
 
 
     MEMBERSHIP_RESPONSE(new Membership(new UserDatabaseImpl()), "POST", "user/create"),
-    LOGIN_RESPONSE(new LoginResult(), "POST", "login.html"),
+    LOGIN_RESPONSE(new LoginResult(new ClientDatabaseImpl(), new UserDatabaseImpl()), "POST", "login.html"),
     LOGOUT_RESPONSE(new Logout(), "POST", "logout"),
+    USER_LIST(new UserList(new UserDatabaseImpl()), "GET", "list"),
     PAGE_RESPONSE(new Page(), "GET", "");
 
     private final HttpResponse httpResponse;
     private final String method;
     private final String uri;
-
 
     ResponseType(HttpResponse httpResponse, String method, String uri) {
         this.httpResponse = httpResponse;
@@ -50,7 +51,7 @@ public enum ResponseType {
         return methodMatchedResponses;
     }
 
-    public HttpResponse getHttpResponse(){
+    public HttpResponse getHttpResponse() {
         return httpResponse;
     }
 }
