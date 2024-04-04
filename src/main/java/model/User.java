@@ -15,6 +15,17 @@ public class User {
         this.email = email;
     }
 
+<<<<<<< HEAD
+=======
+    public static User loginInfo(String userId, String password){
+        User user = new User();
+        user.userId=userId;
+        user.password =password;
+
+        return user;
+    }
+
+>>>>>>> 128dd86 (refactor: 줄 정렬)
     public String getUserId() {
         return userId;
     }
