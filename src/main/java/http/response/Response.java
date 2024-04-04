@@ -16,7 +16,7 @@ public class Response {
         return header;
     }
 
-    public byte[] getFile() {
+    public byte[] getFileAsByte() {
         return file;
     }
 
