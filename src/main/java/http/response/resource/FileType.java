@@ -10,20 +10,21 @@ import java.util.stream.Collectors;
 
 public enum FileType {
 
-    MEMBERSHIP("POST", "/user/create", new MemberShip()),
-    LOGIN_RESULT("POST", "/login.html", new LoginResult()),
-    LOGOUT_PAGE("POST", "/logout.html", new Logout()),
-    REGISTERER_FORM("GET", "/register.html", new RegisterForm()),
-    LOGIN_PAGE("GET", "/user/login.html", new Login()),
-    CONTENT("GET", "", new OtherPage());
+    MEMBERSHIP("POST", Arrays.asList("/user/create"), new MemberShip()),
+    LOGIN_RESULT("POST", Arrays.asList("/login.html"), new LoginResult()),
+    LOGOUT_PAGE("POST", Arrays.asList("/logout.html"), new Logout()),
+    REGISTERER_FORM("GET", Arrays.asList("/register.html", "/registration"), new RegisterForm()),
+    LOGIN_PAGE("GET", Arrays.asList("/user/login.html", "/login"), new Login()),
+    USER_LIST("GET", Arrays.asList("/user/list"), new UserList()),
+    CONTENT("GET", Arrays.asList(""), new OtherPage());
 
     private final String method;
-    private final String uri;
+    private final List<String> uriList;
     private final File requestType;
 
-    FileType(String method, String uri, File requestType) {
+    FileType(String method, List<String> uriList, File requestType) {
         this.method = method;
-        this.uri = uri;
+        this.uriList = uriList;
         this.requestType = requestType;
     }
 
@@ -32,9 +33,9 @@ public enum FileType {
         List<FileType> methodType = getMethod(requestLine);
 
         Optional<FileType> matchedRequestType = methodType.stream()
-                .filter(method ->
+                .filter(fileType ->
                         Arrays.stream(requestLine.getUri())
-                                .anyMatch(i -> i.equals(method.uri)))
+                                .anyMatch(uri -> fileType.uriList.contains(uri)))
                 .findFirst();
 
         FileType finalRequestType = matchedRequestType.orElse(CONTENT);
