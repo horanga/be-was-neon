@@ -16,7 +16,8 @@
             <a class="btn btn_contained btn_size_s" href="/article">글쓰기</a>
           </li>
           <li class="header__menu__item">
-            <button id="logout-btn" class="btn btn_ghost btn_size_s">
+            <form action="/logout" method="post">
+            <button id="logout-btn" class="btn btn_ghost btn_size_s" type="submit">
               로그아웃
             </button>
           </li>
@@ -26,7 +27,7 @@
         <div class="post">
           <div class="post__account">
             <img class="post__account__img" />
-            <p class="post__account__nickname">account</p>
+            <p class="post__account__nickname">username</p>
           </div>
           <img class="post__img" />
           <div class="post__menu">
