@@ -1,5 +1,6 @@
 package webserver;
 
+<<<<<<< HEAD
 import http.request.factory.PathFactories;
 import http.request.path.FilePath;
 import http.request.message.MessageParser;
@@ -8,13 +9,23 @@ import http.request.message.RequestMessage;
 import http.response.HttpResponse;
 import http.response.ResponseSender;
 import http.response.factory.ResponseFactory;
+=======
+import exception.*;
+import http.request.HttpRequest;
+import http.request.HttpRequestParser;
+import http.request.HttpRequestValidator;
+import http.response.ErrorManager;
+import http.response.ResponseManager;
+import org.jetbrains.annotations.NotNull;
+>>>>>>> a2aa51d (refactor: 404 에러 추가)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.MessagePrinter;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.net.URISyntaxException;
+
 
 public class RequestHandler implements Runnable {
     public static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,8 +40,11 @@ public class RequestHandler implements Runnable {
     }
 
     public void run() {
-        debugIp();
+        logIp();
+        ResponseManager handler = new ResponseManager();
+        ErrorManager errorManager = new ErrorManager();
 
+<<<<<<< HEAD
 
         try (InputStreamReader inputStreamReader = new InputStreamReader(in);
              BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
@@ -69,7 +83,59 @@ public class RequestHandler implements Runnable {
     }
   
     private void debugIp() {
+=======
+        try {
+            executeSafely(respondToHttpRequest(handler));
+        } catch (InvalidContentTypeException | InvalidHttpMethodException
+                 | InvalidPostRequestException | NonexistentFileException e) {
+            executeSafely(handleError(errorManager));
+        }finally {
+            closeConnection();
+        }
+    }
+
+    @NotNull
+    private Action handleError(ErrorManager errorManager) {
+        return () -> errorManager.respondToError(out);
+    }
+
+    @NotNull
+    private Action respondToHttpRequest(ResponseManager handler) {
+        return () -> {
+            HttpRequest httpRequest = convertToHttpRequest(in);
+            handler.respondTo(httpRequest, out);
+        };
+    }
+
+    public void executeSafely(Action action){
+        try {
+            action.excute();
+        }catch (IOException e){
+        }
+    }
+
+    private HttpRequest convertToHttpRequest(InputStream in) throws IOException {
+        HttpRequestParser parser = new HttpRequestParser();
+        HttpRequest httpRequest = parser.parseRequestMessage(in);
+        HttpRequestValidator validator = new HttpRequestValidator();
+        validator.validate(httpRequest);
+        return httpRequest;
+ }
+
+    private void logIp() {
+>>>>>>> a2aa51d (refactor: 404 에러 추가)
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
+    }
+
+    private void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                logger.info("Connection closed.");
+            } catch (IOException e) {
+                logger.error("Failed to close the connection: ", e);
+            }
+        }
     }
 }
