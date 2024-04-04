@@ -1,16 +1,21 @@
 package util;
 
-import http.request.message.RequestMessage;
+import http.request.HttpRequest;
+import http.request.message.RequestHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
 
+import java.util.List;
+
 public class MessagePrinter {
-    public void printRequestHeader(RequestMessage message) {
+    public void printRequest(HttpRequest httpRequest) {
 
         Logger log = LoggerFactory.getLogger(RequestHandler.class);
-        log.debug(message.getRequestLine().getRequestLine());
+        String requestLine = httpRequest.getRequestLine().getRequestLine();
+        log.debug(requestLine);
 
-        message.getMessage().stream().forEach(i -> log.debug(i));
+        List<String> requestHeader = httpRequest.getRequestHeader().getRequestHeader();
+        requestHeader.stream().forEach(i -> log.debug(i));
     }
 }

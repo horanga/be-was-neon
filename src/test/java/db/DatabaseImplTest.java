@@ -1,5 +1,7 @@
 package db;
 
+import http.UserDatabase;
+import login.LoginManager;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,11 +12,12 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class DatabaseTest {
+class DatabaseImplTest {
 
+    UserDatabase userDatabase = new UserDatabaseImpl();
     @BeforeEach
     void clearDb() {
-        Database.clear();
+        userDatabase.clear();
     }
     //현재 Db가 static이라서 db를 전역변수로 사용하고 있음.
     // Db를 정리해주지 않으면 테스트 간 격리가 되지 않아서 서로 결과에 영향을 준다.
@@ -24,12 +27,12 @@ class DatabaseTest {
     void test1() {
 
         User jeong = new User("jeong", "123", "jeong", "ad@naver.com");
-        Database.addUser(jeong);
+        userDatabase.addUser(jeong);
         User cheol = new User("cheol", "123", "jeong", "ad@naver.com");
-        Database.addUser(cheol);
+        userDatabase.addUser(cheol);
 
-        User userA = Database.findUserById("jeong").orElseThrow(() -> new IllegalArgumentException());
-        User userB = Database.findUserById("cheol").orElseThrow(() -> new IllegalArgumentException());
+        User userA = userDatabase.findUserById("jeong").orElseThrow(() -> new IllegalArgumentException());
+        User userB = userDatabase.findUserById("cheol").orElseThrow(() -> new IllegalArgumentException());
 
 
         assertThat(jeong).isEqualTo(userA);
@@ -41,10 +44,10 @@ class DatabaseTest {
     void test2() {
 
         User jeong = new User("jeong", "123", "jeong", "ad@naver.com");
-        Database.addUser(jeong);
+        userDatabase.addUser(jeong);
         User cheol = new User("cheol", "123", "jeong", "ad@naver.com");
 
-        assertThatThrownBy(() -> Database.findUserById("cheol").orElseThrow(() -> new IllegalArgumentException()))
+        assertThatThrownBy(() -> userDatabase.findUserById("cheol").orElseThrow(() -> new IllegalArgumentException()))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -55,12 +58,12 @@ class DatabaseTest {
 
 
         User jeong = new User("jeong", "123", "jeong", "ad@naver.com");
-        Database.addUser(jeong);
+        userDatabase.addUser(jeong);
         User cheol = new User("cheol", "123", "jeong", "ad@naver.com");
-        Database.addUser(cheol);
+        userDatabase.addUser(cheol);
 
 
-        Collection<User> all = Database.findAll();
+        Collection<User> all = userDatabase.findAll();
         assertThat(all.stream().anyMatch(i -> i.equals(jeong) || i.equals(cheol))).isTrue();
     }
 
@@ -68,7 +71,38 @@ class DatabaseTest {
     @Test
     void test4() {
 
-        Collection<User> all = Database.findAll();
+        Collection<User> all = userDatabase.findAll();
         assertThat(all).isEmpty();
     }
+
+    @DisplayName("유저의 id와 비밀번호가 정확히 저장되는지 확인한다.")
+    @Test
+    void test5() {
+
+
+        User jeong = new User("jeong", "123", "jeong", "ad@naver.com");
+        userDatabase.addUser(jeong);
+        User cheol = new User("cheol", "123", "jeong", "ad@naver.com");
+        userDatabase.addUser(cheol);
+
+        LoginManager checker = new LoginManager();
+        boolean isAccountCreated = checker.login("jeong", "123");
+        assertThat(isAccountCreated).isTrue();
+    }
+
+    @DisplayName("db에 저장되지 않은 id와 비밀번호로 로그인을 시도하면 실패한다.")
+    @Test
+    void test6() {
+
+
+        User jeong = new User("jeong", "123", "jeong", "ad@naver.com");
+        userDatabase.addUser(jeong);
+        User cheol = new User("cheol", "123", "jeong", "ad@naver.com");
+        userDatabase.addUser(cheol);
+
+        LoginManager checker = new LoginManager();
+        boolean isAccountCreated = checker.login("kim", "123");
+        assertThat(isAccountCreated).isFalse();
+    }
+
 }
