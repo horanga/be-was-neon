@@ -1,7 +1,12 @@
 package http.response.header;
 
+import login.SessionManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class Header {
-    //리퀘스트랑 리스판스랑 헤더가 같다.
 
     private  String carriageReturn = "\r\n";
     private  HttpVersion httpVersion;
@@ -9,7 +14,7 @@ public class Header {
     private  String contentType;
     private  int contentLength;
     private String newLocation;
-
+    SessionManager sessionManager = new SessionManager();
     public Header(){};
 
 
@@ -53,4 +58,27 @@ public class Header {
         stringBuilder.append(carriageReturn);
         return stringBuilder.toString();
     }
+
+    public String getErrorMessage() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(HttpVersion.V_11.getVersion()+statusCode.NOT_FOUND + carriageReturn);
+        stringBuilder.append("Date: " + getCurrentTCurrentime() + carriageReturn);
+        stringBuilder.append("Content-Type: text/html; charset=UTF-8" + carriageReturn);
+        stringBuilder.append("Connection: close" + carriageReturn);
+        stringBuilder.append(carriageReturn);
+        stringBuilder.append("<html><head><title>404 Not Found</title></head><body>");
+        stringBuilder.append("<h1>Not Found</h1>");
+        stringBuilder.append("<p>The requested URL was not found on this server.</p>");
+        stringBuilder.append("</body></html>" + carriageReturn);
+        stringBuilder.append(carriageReturn);
+
+        return stringBuilder.toString();
+    }
+
+    private String getCurrentTCurrentime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return dateFormat.format(new Date());
+    }
+
 }
