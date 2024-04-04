@@ -58,7 +58,7 @@ public class RequestHandler implements Runnable {
 
     public void executeSafely(Action action){
         try {
-            action.excute();
+            action.execute();
         }catch (IOException e){
         }
     }
