@@ -1,15 +1,5 @@
 package webserver;
 
-<<<<<<< HEAD
-import http.request.factory.PathFactories;
-import http.request.path.FilePath;
-import http.request.message.MessageParser;
-import http.request.message.RequestLine;
-import http.request.message.RequestMessage;
-import http.response.HttpResponse;
-import http.response.ResponseSender;
-import http.response.factory.ResponseFactory;
-=======
 import exception.*;
 import http.request.HttpRequest;
 import http.request.HttpRequestParser;
@@ -17,7 +7,6 @@ import http.request.HttpRequestValidator;
 import http.response.ErrorManager;
 import http.response.ResponseManager;
 import org.jetbrains.annotations.NotNull;
->>>>>>> a2aa51d (refactor: 404 에러 추가)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,46 +33,6 @@ public class RequestHandler implements Runnable {
         ResponseManager handler = new ResponseManager();
         ErrorManager errorManager = new ErrorManager();
 
-<<<<<<< HEAD
-
-        try (InputStreamReader inputStreamReader = new InputStreamReader(in);
-             BufferedReader socketBuffer = new BufferedReader(inputStreamReader)) {
-
-            RequestMessage requestMessage = parse(socketBuffer);
-            RequestLine requestLine = requestMessage.getRequestLine();
-            FilePath path = getContentPath(requestLine);
-            print(requestMessage);
-            respond(path, requestMessage);
-
-
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private RequestMessage parse(BufferedReader buffer) throws IOException {
-        MessageParser messageParser = new MessageParser();
-        return messageParser.parseRequestMessage(buffer);
-    }
-
-    private void print(RequestMessage Message) {
-        MessagePrinter messagePrinter = new MessagePrinter();
-        messagePrinter.printRequestHeader(Message);
-    }
-
-    private FilePath getContentPath(RequestLine requestLine) throws IOException {
-        return PathFactories.getPath(requestLine.getUri());
-    }
-
-    private void respond(FilePath request, RequestMessage message) throws IOException, URISyntaxException {
-        ResponseSender sender = new ResponseSender();
-        HttpResponse response = ResponseFactory.chooseResponse(request);
-        byte[] fileToByte = response.respond(request, message.getRequestLine());
-        sender.sendResponse(fileToByte, message, out);
-    }
-  
-    private void debugIp() {
-=======
         try {
             executeSafely(respondToHttpRequest(handler));
         } catch (InvalidContentTypeException | InvalidHttpMethodException
@@ -123,7 +72,7 @@ public class RequestHandler implements Runnable {
  }
 
     private void logIp() {
->>>>>>> a2aa51d (refactor: 404 에러 추가)
+
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
     }

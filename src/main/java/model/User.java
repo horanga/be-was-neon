@@ -8,6 +8,10 @@ public class User {
     private String name;
     private String email;
 
+    private User(){
+
+    }
+
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
         this.password = password;
@@ -15,8 +19,6 @@ public class User {
         this.email = email;
     }
 
-<<<<<<< HEAD
-=======
     public static User loginInfo(String userId, String password){
         User user = new User();
         user.userId=userId;
@@ -24,8 +26,6 @@ public class User {
 
         return user;
     }
-
->>>>>>> 128dd86 (refactor: 줄 정렬)
     public String getUserId() {
         return userId;
     }

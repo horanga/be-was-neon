@@ -11,9 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static http.response.Path.NOT_FOUND_ERROR;
-import static http.response.Path.RELATIVE_PATH;
-
 public class ResponseManager {
 
     ResponseSender sender;

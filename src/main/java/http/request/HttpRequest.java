@@ -1,14 +1,5 @@
 package http.request;
 
-<<<<<<< HEAD
-import java.io.IOException;
-
-public interface HttpRequest {
-
-    public String getUri() throws IOException;
-}
-
-=======
 import http.request.message.RequestBody;
 import http.request.message.RequestHeader;
 import http.request.message.RequestLine;
@@ -26,12 +17,12 @@ public class HttpRequest {
         this.requestBody = requestBody;
     }
 
-    public boolean isPostRequest(){
+    public boolean isPostRequest() {
         return requestLine.isPostRequest();
     }
 
-    public boolean hasRequestBody(){
-        return requestLine!=null;
+    public boolean hasRequestBody() {
+        return requestLine != null;
     }
 
     public RequestLine getRequestLine() {
@@ -54,16 +45,17 @@ public class HttpRequest {
         return cookie.getSid();
     }
 
-    public String[] getUserInfo(){
+    public String[] getUserInfo() {
         return this.requestBody.getUserInfo();
     }
 
-    public String getMimeType(){
-       return this.requestHeader.getMimeType();
+    public String getMimeType() {
+        return this.requestHeader.getMimeType();
     }
-    public String[] getUri(){
+
+    public String[] getUri() {
         return this.requestLine.getUri();
     }
 
+
 }
->>>>>>> fd0d5d7 (refactor: HttpRequest에 메서드 캡슐화)

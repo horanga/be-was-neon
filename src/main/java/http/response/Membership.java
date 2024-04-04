@@ -2,8 +2,6 @@ package http.response;
 
 import http.UserDatabase;
 import http.request.HttpRequest;
-import http.response.header.Header;
-import http.response.header.HttpVersion;
 import model.User;
 import org.slf4j.LoggerFactory;
 
