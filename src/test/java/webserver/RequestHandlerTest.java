@@ -1,6 +1,11 @@
 package webserver;
 
+<<<<<<< HEAD
 import db.Database;
+=======
+import db.UserDatabaseImpl;
+import http.UserDatabase;
+>>>>>>> 93870e9 (refactor: db인터페이스로 변경, db정리 설정)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +21,17 @@ import static org.mockito.Mockito.when;
 
 class RequestHandlerTest {
 
+<<<<<<< HEAD
     @BeforeEach
     void clearDb() {
         Database.clear();
+=======
+    UserDatabase userDatabase = new UserDatabaseImpl();
+
+    @BeforeEach
+    void clearDb() {
+        userDatabase.clear();
+>>>>>>> 93870e9 (refactor: db인터페이스로 변경, db정리 설정)
     }
     @DisplayName("index.html 리소스를 요청할 때 네트워크로 응답이 반환된다.")
     @Test
