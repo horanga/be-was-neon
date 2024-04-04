@@ -1,12 +1,14 @@
 package http.response.resource;
 
-public interface File {
-    public static final String RELATIVE_PATH = "src/main/resources/static/";
+import exception.NonexistentFileException;
 
-    java.io.File getFile(String[] resourcePath);
+public interface File {
+
+    java.io.File getFile(String[] resourcePath) throws NullPointerException;
 
     default String joinPath(String[] resourcePath) {
         String path = String.join("/", resourcePath);
         return path;
     }
+
 }
