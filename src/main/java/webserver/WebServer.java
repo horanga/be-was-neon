@@ -12,14 +12,14 @@ import java.util.concurrent.Executors;
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
-
     private static final int COUNT_OF_THREAD = Runtime.getRuntime().availableProcessors();
-    private static final ExecutorService executorService = Executors.newFixedThreadPool(COUNT_OF_THREAD);
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(COUNT_OF_THREAD*10);
+    //해당 PC의 스레드 개수 10배가 적정치
+
 
     public static void main(String args[]) throws Exception {
         int port = determinePort(args);
         connectSocket(port);
-
     }
 
     private static int determinePort(String[] args) {
